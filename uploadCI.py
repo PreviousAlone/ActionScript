@@ -26,7 +26,7 @@ def sendAPKs(path):
 
     parma = {
         "chat_id": os.environ.get("CHAT_ID"),
-        "caption": "version: " + os.environ.get("VERSION_NAME") + "(" + os.environ.get("VERSION_CODE") + ")" + "\n" + os.environ.get("COMMIT_MESSAGE"),
+        "caption": "New Nnngram build. Congratulations!\n\nVersion: " + os.environ.get("VERSION_NAME") + "(" + os.environ.get("VERSION_CODE") + ")" + "\n\nCommit message:\n" + os.environ.get("COMMIT_MESSAGE"),
     }
 
     print(parma)
