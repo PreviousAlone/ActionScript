@@ -26,11 +26,12 @@ def genFileDirectory(path):
 
 def sendMetadataDesc():
     parma = {
-        "chat_id": os.environ.get("METADATA_CHANNEL_ID"),
+        "chat_id": -1002135305446,
         "text": os.environ["COMMIT_MESSAGE"],
     }
+    print(parma)
     response = requests.post(urlPrefix + "/sendMessage", params=parma)
-
+    print(response.json())
     return response.json()["result"]["message_id"]
 
 
@@ -51,17 +52,18 @@ def sendAPKs(path):
     print(parma)
 
     r = requests.post(urlPrefix + "/sendDocument", params=parma, files=file)
+    print(r.json())
 
-    parma["chat_id"] = os.environ.get("APK_CHANNEL_ID")
+    parma["chat_id"] = -1001848519901
 
-    r = requests.post(urlPrefix + "/sendDocument", params=parma, files=file)
-
-    return r.json()["result"]["message_id"] - 1
+    response = requests.post(urlPrefix + "/sendDocument", params=parma, files=file)
+    print(response.json())
+    return response.json()["result"]["message_id"] - 1
 
 
 def sendMetadata(changesID, startID):
     parma = {
-        "chat_id": os.environ.get("METADATA_CHANNEL_ID"),
+        "chat_id": -1002135305446,
         "text": str(os.getenv("VERSION_NAME"))
         + ","
         + str(os.getenv("VERSION_CODE"))
