@@ -1,4 +1,6 @@
 import json
+import shutil
+import time
 import os
 import requests
 
@@ -19,7 +21,11 @@ def genFileDirectory(path):
     for root, dirs, file_name_dic in files_walk:
         for fileName in file_name_dic:
             if findString(fileName, "arm64"):
-                target["document"] = (fileName, open(path + "/" + fileName, "rb"))
+                newFileName = time.strftime("%Y%m%d%H%M%S", time.localtime()) + ".apk"
+                shutil.copyfile(
+                    path + "/" + fileName, path + "/" + newFileName
+                )
+                target["document"] = (fileName, open(path + "/" + newFileName, "rb"))
 
     return target
 
@@ -35,7 +41,7 @@ def sendMetadataDesc():
     return response.json()["result"]["message_id"]
 
 
-def sendAPKs(path):
+def sendApkToChat(path):
     file = genFileDirectory("./apks")
 
     parma = {
@@ -54,7 +60,22 @@ def sendAPKs(path):
     r = requests.post(urlPrefix + "/sendDocument", params=parma, files=file)
     print(r.json())
 
-    parma["chat_id"] = -1001848519901
+
+def sendAPKs(path):
+    file = genFileDirectory("./apks")
+
+    parma = {
+        "chat_id": -1001848519901,
+        "caption": "New Nnngram build. Congratulations!\n\nVersion: "
+        + os.environ.get("VERSION_NAME", "")
+        + "("
+        + os.environ.get("VERSION_CODE", "")
+        + ")"
+        + "\n\nCommit message:\n"
+        + os.environ.get("COMMIT_MESSAGE", ""),
+    }
+
+    print(parma)
 
     response = requests.post(urlPrefix + "/sendDocument", params=parma, files=file)
     print(response.json())
@@ -78,5 +99,6 @@ def sendMetadata(changesID, startID):
 
 if __name__ == "__main__":
     changesID = sendMetadataDesc()
+    sendApkToChat("./apks")
     startID = sendAPKs("./apks")
     sendMetadata(changesID, startID)
