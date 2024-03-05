@@ -1,7 +1,7 @@
-import json
+import os
 import shutil
 import time
-import os
+
 import requests
 
 apiAddress = "http://127.0.0.1:8081/"
@@ -22,9 +22,7 @@ def genFileDirectory(path):
         for fileName in file_name_dic:
             if findString(fileName, "arm64"):
                 newFileName = time.strftime("%Y%m%d%H%M%S", time.localtime()) + ".apk"
-                shutil.copyfile(
-                    path + "/" + fileName, path + "/" + newFileName
-                )
+                shutil.copyfile(path + "/" + fileName, path + "/" + newFileName)
                 target["document"] = (fileName, open(path + "/" + newFileName, "rb"))
 
     return target
@@ -42,17 +40,18 @@ def sendMetadataDesc():
 
 
 def sendApkToChat(path):
-    file = genFileDirectory("./apks")
+    file = genFileDirectory(path)
 
     parma = {
         "chat_id": os.environ.get("CHAT_ID"),
-        "caption": "New Nnngram build. Congratulations!\n\nVersion: "
+        "caption": "Congratulations! New Nnngram build out.\n\nVersion: `"
         + os.environ.get("VERSION_NAME", "")
         + "("
         + os.environ.get("VERSION_CODE", "")
-        + ")"
-        + "\n\nCommit message:\n"
-        + os.environ.get("COMMIT_MESSAGE", ""),
+        + ")`"
+        + "\n\nCommit message:\n```\n"
+        + os.environ.get("COMMIT_MESSAGE", "")
+        + "\n```",
     }
 
     print(parma)
@@ -62,17 +61,18 @@ def sendApkToChat(path):
 
 
 def sendAPKs(path):
-    file = genFileDirectory("./apks")
+    file = genFileDirectory(path)
 
     parma = {
         "chat_id": -1001848519901,
-        "caption": "New Nnngram build. Congratulations!\n\nVersion: "
+        "caption": "Congratulations! New Nnngram build out.\n\nVersion: `"
         + os.environ.get("VERSION_NAME", "")
         + "("
         + os.environ.get("VERSION_CODE", "")
-        + ")"
-        + "\n\nCommit message:\n"
-        + os.environ.get("COMMIT_MESSAGE", ""),
+        + ")`"
+        + "\n\nCommit message:\n```\n"
+        + os.environ.get("COMMIT_MESSAGE", "")
+        + "\n```",
     }
 
     print(parma)
@@ -98,7 +98,8 @@ def sendMetadata(changesID, startID):
 
 
 if __name__ == "__main__":
+    apk_path = "./apks"
     changesID = sendMetadataDesc()
-    sendApkToChat("./apks")
-    startID = sendAPKs("./apks")
+    sendApkToChat(apk_path)
+    startID = sendAPKs(apk_path)
     sendMetadata(changesID, startID)
