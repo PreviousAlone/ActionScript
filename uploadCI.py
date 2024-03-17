@@ -52,6 +52,7 @@ def sendApkToChat(path):
         + "\n\nCommit message:\n```\n"
         + os.environ.get("COMMIT_MESSAGE", "")
         + "\n```",
+        "parse_mode": "Markdown",
     }
 
     print(parma)
@@ -73,6 +74,7 @@ def sendAPKs(path):
         + "\n\nCommit message:\n```\n"
         + os.environ.get("COMMIT_MESSAGE", "")
         + "\n```",
+        "parse_mode": "Markdown",
     }
 
     print(parma)
